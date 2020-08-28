@@ -1,0 +1,44 @@
+version: '3'
+
+networks:
+  practice-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.10.0/16
+
+services:
+
+  practice-java-spring-mongo-k8s:
+    hostname: practice-java-spring-mongo-k8s
+    container_name: practice-java-spring-mongo-k8s
+    image: alexandroandrademartinez/practice-java-spring-mongo-k8s:0.0.1-SNAPSHOT
+    environment:
+      - MONGO_HOST=mongo
+    networks:
+      practice-network:
+        ipv4_address: 10.10.10.2
+    ports:
+      - "8080:8080"
+
+  mongo:
+    hostname: mongo
+    container_name: mongo
+    image: mongo:3.6
+    volumes:
+      - "./data/mongodb:/data"
+    networks:
+      practice-network:
+        ipv4_address: 10.10.10.1
+    ports:
+      - "27017:27017"
+
+  mongo_express:
+    hostname: mongo_express
+    container_name: mongo_express
+    image: mongo-express:0.54
+    networks:
+      practice-network:
+        ipv4_address: 10.10.10.200
+    ports:
+      - "27018:8081"
